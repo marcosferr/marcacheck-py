@@ -2,6 +2,8 @@
 ### Sistema de Inteligencia Marcaria y Clearance Registral para Paraguay
 **Integración oficial en tiempo real con DINAPI (Joaju/IPAS) • Inteligencia de Mercado Web con Tavily • Asesor Legal Interactivo con OpenAI (Ley N° 1294/98)**
 
+🌐 **Despliegue en Producción:** [https://marcacheck-py.vercel.app](https://marcacheck-py.vercel.app)
+
 ---
 
 ## 🚀 Descripción General
