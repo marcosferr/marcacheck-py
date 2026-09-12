@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Viabilidad de Marca - TEREREDEV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding: 30px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header-card { background: var(--card-bg); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 24px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px; }
+        .brand-title { font-size: 28px; font-weight: 700; color: var(--primary); }
+        .meta-info { color: var(--text-muted); font-size: 14px; }
+        .badge-risk { background: #fef9c3; color: #854d0e; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
+        .meter-box { display: flex; gap: 20px; align-items: center; margin-top: 15px; }
+        .score-circle { width: 84px; height: 84px; border-radius: 50%; background: #fef9c3; color: #854d0e; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; }
+        .score-number { font-size: 24px; line-height: 1; }
+        .score-label { font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+        .headline-box { flex: 1; font-size: 16px; font-weight: 500; }
+        
+        .section-card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border); }
+        .section-title { font-size: 18px; font-weight: 600; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }
+        th { background: #f1f5f9; text-align: left; padding: 10px 12px; color: var(--text-muted); font-weight: 600; border-bottom: 2px solid var(--border); }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: #f8fafc; }
+        .fw-bold { font-weight: 600; }
+        .text-danger { color: #dc2626; }
+        .badge { display: inline-block; padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #e2e8f0; }
+        .status-pill { background: #eff6ff; color: #1e40af; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        
+        ul.styled-list { padding-left: 20px; }
+        ul.styled-list li { margin-bottom: 8px; }
+        
+        .web-result-card { padding: 12px 14px; border-radius: 8px; background: #f8fafc; border: 1px solid var(--border); margin-bottom: 10px; }
+        .web-result-title { font-weight: 600; color: #2563eb; text-decoration: none; font-size: 15px; }
+        .web-result-title:hover { text-decoration: underline; }
+        .web-result-url { font-size: 12px; color: #16a34a; margin-bottom: 4px; word-break: break-all; }
+        .web-result-snippet { font-size: 13px; color: #475569; }
+        
+        .print-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .print-btn:hover { background: var(--primary-light); }
+        @media print {
+            body { padding: 0; background: white; }
+            .print-btn { display: none; }
+            .section-card, .header-card { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-card">
+        <div class="header-top">
+            <div>
+                <span class="meta-info">MarcaCheck PY - Dictamen Oficial y de Mercado</span>
+                <h1 class="brand-title">Marca: TEREREDEV</h1>
+                <div class="meta-info">Todas las clases • Fecha: 2026-09-12 15:51:46</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="badge-risk">● Riesgo Medio</div>
+                <div style="margin-top: 10px;"><button class="print-btn" onclick="window.print()">Imprimir / Guardar PDF</button></div>
+            </div>
+        </div>
+        <div class="meter-box">
+            <div class="score-circle">
+                <span class="score-number">65%</span>
+                <span class="score-label">Viabilidad</span>
+            </div>
+            <div class="headline-box">
+                <p>Riesgo BAJO: La denominación 'tereredev' no registra impedimentos directos en DINAPI. Se detectó además presencia comercial activa en la web o comercio local.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 1: DINAPI -->
+    <div class="section-card">
+        <div class="section-title">⚖️ Registros Oficiales DINAPI (Paraguay)</div>
+        <p class="meta-info">Registros analizados en el sistema IPAS: <strong>0</strong></p>
+        
+        <p style="color: #15803d; margin-top: 10px;">✅ No se encontraron marcas idénticas ni conflictos insalvables en trámite o concedidas en esta clase.</p>
+
+        
+    </div>
+
+    <!-- Sección 2: Tavily Search -->
+    <div class="section-card">
+        <div class="section-title">🌐 Inteligencia de Mercado y Presencia Web (Tavily)</div>
+        <p style="margin-bottom: 12px; font-size: 14px;"><strong>Diagnóstico de Mercado:</strong> Tereré is Paraguay's national drink, made from yerba mate and herbs. It's traditionally enjoyed socially. It's exported to 37 destinations worldwide.</p>
+        
+        <div class="web-result-card">
+            <a href="https://www.youtube.com/watch?v=i7mBsAb0ZbE" target="_blank" class="web-result-title">TERERÉ, the national drink of Paraguay</a>
+            <div class="web-result-url">https://www.youtube.com/watch?v=i7mBsAb0ZbE</div>
+            <p class="web-result-snippet">El Tereré es la bebida nacional del Paraguay, en este video te compartimos 3 opciones para que puedas disfrutar de la experiencia.</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.facebook.com/NCCIberoamerica/videos/el-terer%C3%A9-la-bebida-tradicional-de-paraguay/1354434089135987" target="_blank" class="web-result-title">El Tereré, la bebida tradicional de Paraguay. 🇵🇾 Se trata ...</a>
+            <div class="web-result-url">https://www.facebook.com/NCCIberoamerica/videos/el-terer%C3%A9-la-bebida-tradicional-de-paraguay/1354434089135987</div>
+            <p class="web-result-snippet">El Tereré, la bebida tradicional de Paraguay. Se trata de una mezcla de yerba mate y hierbas medicinales que fomenta la convivencia y</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.tiktok.com/@arayavlogs/video/7534817451859545400" target="_blank" class="web-result-title">Descubre el Tereré: Sabor de Paraguay</a>
+            <div class="web-result-url">https://www.tiktok.com/@arayavlogs/video/7534817451859545400</div>
+            <p class="web-result-snippet">Descubre el Tereré: Sabor de Paraguay. ¡Probé el tereré en Paraguay! Descubre esta bebida refrescante y cultural. #impactante #comida #terere.</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.youtube.com/shorts/pEgXhrSoHgY" target="_blank" class="web-result-title">Tereré: The National Drink of Paraguay</a>
+            <div class="web-result-url">https://www.youtube.com/shorts/pEgXhrSoHgY</div>
+            <p class="web-result-snippet">videos with friends, family, and the world. Tereré: The National Drink of Paraguay. Learn more Auto-dubbed @gabodunn Subscribe</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.instagram.com/reel/DVTieqfDWrh" target="_blank" class="web-result-title">El tereré es más que una bebida</a>
+            <div class="web-result-url">https://www.instagram.com/reel/DVTieqfDWrh</div>
+            <p class="web-result-snippet">Hoy, nuestra yerba mate cuenta con un registro de destinos exportados entre 2019 y 2026, a aproximadamente 37 destinos de América, Europa y Asia</p>
+        </div>
+        
+    </div>
+
+    <!-- Sección 3: Fundamentos Legales y Recomendaciones -->
+    <div class="section-card">
+        <div class="section-title">📋 Fundamentos y Recomendaciones Estratégicas</div>
+        <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--primary);">Fundamento en Ley de Marcas N° 1294/98:</h4>
+        <ul class="styled-list" style="margin-bottom: 16px;">
+            <li>Doctrina de Marca de Hecho / Uso Previo: La existencia de un comercio preexistente en el mercado paraguayo puede facultar al usuario anterior a presentar oposición.</li>
+        </ul>
+        <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--primary);">Estrategia de Protección Aconsejada:</h4>
+        <ul class="styled-list">
+            <li><strong>Recomendación:</strong> Excelente disponibilidad marcaria en los registros oficiales de la DINAPI.</li><li><strong>Recomendación:</strong> Proceder con la presentación de la solicitud formal para asegurar la prioridad temporal de registro.</li><li><strong>Recomendación:</strong> Investigar la identidad del negocio detectado en internet para descartar conflicto de uso de hecho o titularidad.</li><li><strong>Recomendación:</strong> Se identificaron perfiles en redes sociales vinculados (YouTube, Facebook, TikTok).</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+    

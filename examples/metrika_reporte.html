@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Viabilidad de Marca - METRIKA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding: 30px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header-card { background: var(--card-bg); border-radius: 12px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 24px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px; }
+        .brand-title { font-size: 28px; font-weight: 700; color: var(--primary); }
+        .meta-info { color: var(--text-muted); font-size: 14px; }
+        .badge-risk { background: #fef9c3; color: #854d0e; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
+        .meter-box { display: flex; gap: 20px; align-items: center; margin-top: 15px; }
+        .score-circle { width: 84px; height: 84px; border-radius: 50%; background: #fef9c3; color: #854d0e; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; }
+        .score-number { font-size: 24px; line-height: 1; }
+        .score-label { font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+        .headline-box { flex: 1; font-size: 16px; font-weight: 500; }
+        
+        .section-card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border); }
+        .section-title { font-size: 18px; font-weight: 600; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }
+        th { background: #f1f5f9; text-align: left; padding: 10px 12px; color: var(--text-muted); font-weight: 600; border-bottom: 2px solid var(--border); }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover td { background: #f8fafc; }
+        .fw-bold { font-weight: 600; }
+        .text-danger { color: #dc2626; }
+        .badge { display: inline-block; padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #e2e8f0; }
+        .status-pill { background: #eff6ff; color: #1e40af; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        
+        ul.styled-list { padding-left: 20px; }
+        ul.styled-list li { margin-bottom: 8px; }
+        
+        .web-result-card { padding: 12px 14px; border-radius: 8px; background: #f8fafc; border: 1px solid var(--border); margin-bottom: 10px; }
+        .web-result-title { font-weight: 600; color: #2563eb; text-decoration: none; font-size: 15px; }
+        .web-result-title:hover { text-decoration: underline; }
+        .web-result-url { font-size: 12px; color: #16a34a; margin-bottom: 4px; word-break: break-all; }
+        .web-result-snippet { font-size: 13px; color: #475569; }
+        
+        .print-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .print-btn:hover { background: var(--primary-light); }
+        @media print {
+            body { padding: 0; background: white; }
+            .print-btn { display: none; }
+            .section-card, .header-card { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-card">
+        <div class="header-top">
+            <div>
+                <span class="meta-info">MarcaCheck PY - Dictamen Oficial y de Mercado</span>
+                <h1 class="brand-title">Marca: METRIKA</h1>
+                <div class="meta-info">Todas las clases • Fecha: 2026-09-12 15:52:01</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="badge-risk">● Riesgo Medio</div>
+                <div style="margin-top: 10px;"><button class="print-btn" onclick="window.print()">Imprimir / Guardar PDF</button></div>
+            </div>
+        </div>
+        <div class="meter-box">
+            <div class="score-circle">
+                <span class="score-number">40%</span>
+                <span class="score-label">Viabilidad</span>
+            </div>
+            <div class="headline-box">
+                <p>Riesgo MEDIO-BAJO: No se hallaron marcas idénticas concedidas, aunque existen signos con similitud parcial. Se detectó además presencia comercial activa en la web o comercio local.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 1: DINAPI -->
+    <div class="section-card">
+        <div class="section-title">⚖️ Registros Oficiales DINAPI (Paraguay)</div>
+        <p class="meta-info">Registros analizados en el sistema IPAS: <strong>4</strong></p>
+        
+        <p style="color: #15803d; margin-top: 10px;">✅ No se encontraron marcas idénticas ni conflictos insalvables en trámite o concedidas en esta clase.</p>
+
+        
+        <h4 style="margin-top: 20px; font-size: 14px; color: #475569;">Otros Signos Semajantes o en Clases Conexas:</h4>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr><th>Signo</th><th>Clase</th><th>Titular</th><th>Estado</th><th>Similitud</th></tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>Métrika Intelligence</td>
+            <td>Clase 42</td>
+            <td>MÉTRIKA E.A.S [PY]</td>
+            <td>Concedida</td>
+            <td>45.3%</td>
+        </tr>
+        
+        <tr>
+            <td>Métrika Intelligence</td>
+            <td>Clase 35</td>
+            <td>MÉTRIKA E.A.S [PY]</td>
+            <td>Con rechazo a notificar</td>
+            <td>45.3%</td>
+        </tr>
+        
+        <tr>
+            <td>Métrika Intelligence</td>
+            <td>Clase 36</td>
+            <td>MÉTRIKA E.A.S [PY]</td>
+            <td>Con rechazo a notificar</td>
+            <td>45.3%</td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    <!-- Sección 2: Tavily Search -->
+    <div class="section-card">
+        <div class="section-title">🌐 Inteligencia de Mercado y Presencia Web (Tavily)</div>
+        <p style="margin-bottom: 12px; font-size: 14px;"><strong>Diagnóstico de Mercado:</strong> Metrika is a leading Paraguayan real estate development company known for projects like Lofty City Hub, Riviere, and Frontera. It focuses on creating innovative and sustainable living spaces. The company has delivered several projects and continues to expand its portfolio.</p>
+        
+        <div class="web-result-card">
+            <a href="https://www.elinmobiliario.com.py/post/metrika-presenta-lofty-city-hub-un-nuevo-referente-en-la-evoluci%C3%B3n-urbana-de-ciudad-del-este" target="_blank" class="web-result-title">Metrika y Edifica Presenta Lofty City Hub, un Nuevo ...</a>
+            <div class="web-result-url">https://www.elinmobiliario.com.py/post/metrika-presenta-lofty-city-hub-un-nuevo-referente-en-la-evoluci%C3%B3n-urbana-de-ciudad-del-este</div>
+            <p class="web-result-snippet">Metrika se consolida como una de las desarrolladoras más innovadoras del Paraguay. marcada por hitos como Lofty Co-Living, Fronterra y Riviere,</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.instagram.com/metrika_py?hl=en" target="_blank" class="web-result-title">Métrika (@metrika_py) · Paraguay</a>
+            <div class="web-result-url">https://www.instagram.com/metrika_py?hl=en</div>
+            <p class="web-result-snippet">#Metrika En Riviere, cada detalle fue pensado para crear una propuesta residencial diferente dentro del mercado premium de Alto Paraná. iere #Metrika Paraguay</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.youtube.com/watch?v=wUEQbM0ak78" target="_blank" class="web-result-title">MÉTRIKA: Empresa lider en el desarrollo de inmuebles</a>
+            <div class="web-result-url">https://www.youtube.com/watch?v=wUEQbM0ak78</div>
+            <p class="web-result-snippet">Carlos Gómez Núñez, al frente de MÉTRIKA, empresa líder en el desarrollo de inmuebles que continúa transformando el paisaje urbano con</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://metrika.com.py" target="_blank" class="web-result-title">Metrika – Metrika</a>
+            <div class="web-result-url">https://metrika.com.py</div>
+            <p class="web-result-snippet">José Argüello
+
+### José Argüello
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur laoreet cursus volutpat. Aliquam sit amet ligula et justo tincidunt laorsoet non vitae lorem.
+
+Ver todos
+
+En Metrika somos una empresa líder en el desarrollo de inmuebles, comprometida con la creación de espacios innovadores y sostenibles que mejoren la calidad de vida de las personas y las comunidades.
+
+Ver más
+
+## Suscribite a nuestro newsletter
+
+## Mapa de ubicaciones [...] Ir al contenido
+
+
+
+## Frontera
+
+## Perfecta para quienes buscan disfrutar de la ciudad en todo su esplendor.
+
+## Estado:
+
+Entregado
+
+
+
+## Lofty
+
+## ¡Un edificio inteligente que optimiza el estilo de vida moderno!
+
+## Estado:
+
+Entregado
+
+
+
+## Riviere
+
+## Riviere es un edificio que se erige frente al río Paraná para regalarle a sus propietarios, sus mejores vistas.
+
+## Estado:
+
+En Obra
+
+Vendidos
+
+0 %
+
+Ver avance
+
+
+
+## Lofty City Hub [...] Lofty es mucho más que un edificio residencial diseñado para uno de los segmentos más demandantes de la región como los estudiantes universitarios, moradores temporales y ejecutivos; además es un modelo de negocio de renta alta y segura para todo tipo de inversionistas.
+
+Ver más
+
+## Noticias
+
+Fusce Condimentum Etiam Lorem Fringilla
+
+### Fusce Condimentum Etiam Lorem Fringilla
+
+26 junio, 2024
+
+Donec sed odio dui. Vestibulum id ligula porta felis euismod...
+
+Ver más</p>
+        </div>
+        
+        <div class="web-result-card">
+            <a href="https://www.facebook.com/metrika.py" target="_blank" class="web-result-title">Metrika | Ciudad del Este</a>
+            <div class="web-result-url">https://www.facebook.com/metrika.py</div>
+            <p class="web-result-snippet">Las ciudades evolucionan. Nosotros desarrollamos proyectos para acompañar esa transformación. #Metrika · Ariel Maidana Emprendedor Inmobiliario.</p>
+        </div>
+        
+    </div>
+
+    <!-- Sección 3: Fundamentos Legales y Recomendaciones -->
+    <div class="section-card">
+        <div class="section-title">📋 Fundamentos y Recomendaciones Estratégicas</div>
+        <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--primary);">Fundamento en Ley de Marcas N° 1294/98:</h4>
+        <ul class="styled-list" style="margin-bottom: 16px;">
+            <li>Doctrina de Marca de Hecho / Uso Previo: La existencia de un comercio preexistente en el mercado paraguayo puede facultar al usuario anterior a presentar oposición.</li>
+        </ul>
+        <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--primary);">Estrategia de Protección Aconsejada:</h4>
+        <ul class="styled-list">
+            <li><strong>Recomendación:</strong> La denominación cuenta con viabilidad registral preliminar en DINAPI.</li><li><strong>Recomendación:</strong> Se recomienda acompañar el registro con una adecuada reivindicación de elementos mixtos o gráficos.</li><li><strong>Recomendación:</strong> Investigar la identidad del negocio detectado en internet para descartar conflicto de uso de hecho o titularidad.</li><li><strong>Recomendación:</strong> Se identificaron perfiles en redes sociales vinculados (Instagram, YouTube, Facebook).</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+    

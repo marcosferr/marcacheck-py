@@ -1,0 +1,6 @@
+# Dependencias de MarcaCheck PY
+requests>=2.28.0
+python-dotenv>=1.0.0
+
+# Opcional (para SDK oficial de Tavily si se desea):
+# tavily-python>=0.3.0
