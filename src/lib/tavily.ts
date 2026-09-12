@@ -81,6 +81,19 @@ export class TavilyBrandResearcher {
       const socialProfiles: Array<{ platform: string; url: string }> = [];
       const allTextChunks: string[] = [];
 
+      const GENERIC_EXCLUDES = [
+        "scholar.google.",
+        "books.google.",
+        "ubuy.",
+        "aliexpress.",
+        "amazon.",
+        "ebay.",
+        "tiendamia."
+      ];
+
+      const brandLower = cleanBrand.toLowerCase();
+      const brandRegex = new RegExp(`\\b${brandLower.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}\\b`, "i");
+
       for (const item of rawResults) {
         const url = String(item.url || "");
         const title = String(item.title || "");
@@ -94,14 +107,35 @@ export class TavilyBrandResearcher {
           domain = "";
         }
 
+        // Ignorar sitios agregadores mundiales que no representan negocios locales
+        if (GENERIC_EXCLUDES.some(ex => domain.includes(ex))) {
+          continue;
+        }
+
+        const titleLower = title.toLowerCase();
+        const contentLower = content.toLowerCase();
+        const fullText = titleLower + " " + contentLower;
+
+        // Validar que la marca aparezca explícitamente en el contenido o título
+        const brandInText = brandRegex.test(fullText);
+        if (!brandInText) {
+          continue;
+        }
+
+        // Si el score de Tavily es marginal y la marca no está en el título, es ruido
+        const brandInTitle = brandRegex.test(titleLower);
+        if (score < 0.15 && !brandInTitle) {
+          continue;
+        }
+
         const isComPy = domain.endsWith(".com.py");
         const isPy =
           domain.endsWith(".py") ||
           isComPy ||
-          content.toLowerCase().includes("paraguay") ||
-          title.toLowerCase().includes("paraguay") ||
-          content.toLowerCase().includes("asunción") ||
-          content.toLowerCase().includes("asuncion");
+          contentLower.includes("paraguay") ||
+          titleLower.includes("paraguay") ||
+          contentLower.includes("asunción") ||
+          contentLower.includes("asuncion");
 
         if (isPy) {
           pyDetected = true;

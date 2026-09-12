@@ -211,7 +211,7 @@ export class BrandClearanceEngine {
     }
 
     // Evaluación de Notoriedad e Inteligencia Web (Tavily)
-    if (webReport.py_presence_detected) {
+    if (webReport.py_presence_detected && webReport.results.length > 0) {
       const webContentLower = (webReport.results || []).map(r => `${r.title} ${r.content}`).join(" ").toLowerCase();
       const hasHighNotoriety =
         webReport.total_results >= 3 &&
@@ -228,24 +228,29 @@ export class BrandClearanceEngine {
           webContentLower.includes("pionera"));
 
       if (hasHighNotoriety) {
-        // Marca notoria o con altísima presencia comercial
-        riskScore = Math.max(riskScore, 90);
+        // Marca notoria consolidada en Paraguay
+        riskScore = Math.max(riskScore, 92);
         headline = `Riesgo CRÍTICO: Se detectó alta notoriedad y presencia de mercado consolidada en Paraguay para "${brandName}".`;
         legalBasis.push("Art. 2 Inc. k) Ley 1294/98 (Protección de la Marca Notoria): Prohíbe el registro de signos que constituyan la reproducción, imitación o traducción de una marca notoriamente conocida, independientemente del principio de especialidad de clases.");
         recommendations.unshift("ALERTA DE CESE Y DESISTA: Existe altísimo riesgo de recibir una intimación de cese y desista o demandas por infracción marcaria y competencia desleal debido a la notoriedad pública del signo en el mercado nacional.");
-      } else if (webReport.total_results >= 2 || webReport.social_profiles.length > 0) {
-        // Presencia comercial local activa
-        riskScore = Math.max(riskScore, 75);
-        if (!hasIdenticalActive && !hasPendingApplication) {
-          headline = `Riesgo ALTO: Se detectó actividad comercial activa y perfiles públicos en Paraguay para "${brandName}".`;
+      } else if (webReport.social_profiles.length > 0 || (webReport.py_domain_count >= 4 && webReport.results.length >= 4)) {
+        // Presencia comercial local formalmente establecida (redes sociales comerciales directas o múltiples portales paraguayos)
+        riskScore = Math.max(riskScore, 70);
+        if (!hasIdenticalActive && !hasPendingApplication && !hasHighSimilarity) {
+          headline = `Riesgo ALTO: Se detectó actividad comercial activa con perfiles públicos o múltiples dominios en Paraguay para "${brandName}".`;
         }
         legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: La existencia de un comercio preexistente en el mercado paraguayo faculta al usuario anterior a deducir oposición e invocar derechos de uso prioritario.");
         recommendations.unshift("RIESGO DE CESE Y DESISTA: Se detectaron comercios activos con esta denominación. Se aconseja descartar conflicto de uso de hecho antes de invertir en la marca.");
       } else {
-        // Presencia incipiente
-        riskScore = Math.max(riskScore, 55);
-        legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: El comercio previo no registrado puede fundar oposiciones en DINAPI.");
-        recommendations.push("Investigar la identidad del negocio detectado en internet para descartar conflicto de titularidad.");
+        // Menciones web aisladas o incidentales en Paraguay (Riesgo Bajo a Medio)
+        if (riskScore < 35) {
+          riskScore = 35; // Nivel MEDIO moderado (viabilidad 65%)
+          if (!hasIdenticalActive && !hasPendingApplication) {
+            headline = `Riesgo MEDIO: Disponibilidad registral positiva en DINAPI, con menciones web o artículos en Paraguay a verificar.`;
+          }
+        }
+        legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: Menciones web locales que ameritan verificación previa.");
+        recommendations.push("Investigar los enlaces web encontrados para descartar coincidencias en el mismo rubro comercial.");
       }
     }
 
