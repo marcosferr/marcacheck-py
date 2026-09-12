@@ -5,6 +5,8 @@ export interface ChatMessage {
   content: string;
 }
 
+export const DEFAULT_OPENAI_MODEL = "gpt-5-mini";
+
 export const PARAGUAY_LEGAL_SYSTEM_PROMPT = `Eres el Asesor Especialista en Propiedad Intelectual y Derecho de Marcas de "MarcaCheck PY", experto en la legislación marcaria de la República del Paraguay (Ley N° 1294/98 "De Marcas", Decretos Reglamentarios, directrices de la DINAPI y convenios OMPI/París).
 
 Tus funciones y directrices:
@@ -62,7 +64,7 @@ export async function askOpenAI(params: {
     );
   }
 
-  const model = params.model || "gpt-4o-mini";
+  const model = params.model || DEFAULT_OPENAI_MODEL;
 
   const systemMessages: ChatMessage[] = [
     { role: "system", content: PARAGUAY_LEGAL_SYSTEM_PROMPT }
@@ -77,19 +79,49 @@ export async function askOpenAI(params: {
 
   const payloadMessages = [...systemMessages, ...params.messages];
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  // Build payload with support for newer models (max_completion_tokens)
+  const bodyPayload: Record<string, any> = {
+    model: model,
+    messages: payloadMessages,
+  };
+
+  // Many newer OpenAI models (o1/o3/gpt-5) require max_completion_tokens and reject max_tokens or non-default temperature
+  if (model.startsWith("o1") || model.startsWith("o3") || model.includes("gpt-5")) {
+    bodyPayload.max_completion_tokens = 2000;
+  } else {
+    bodyPayload.temperature = 0.7;
+    bodyPayload.max_tokens = 1500;
+  }
+
+  let response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${key}`
     },
-    body: JSON.stringify({
-      model: model,
-      messages: payloadMessages,
-      temperature: 0.7,
-      max_tokens: 1500
-    })
+    body: JSON.stringify(bodyPayload)
   });
+
+  // If failed with unsupported parameter max_tokens, retry with max_completion_tokens
+  if (!response.ok) {
+    const errorBody = await response.text();
+    if (errorBody.includes("max_tokens") || errorBody.includes("temperature")) {
+      delete bodyPayload.max_tokens;
+      delete bodyPayload.temperature;
+      bodyPayload.max_completion_tokens = 2000;
+
+      response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${key}`
+        },
+        body: JSON.stringify(bodyPayload)
+      });
+    } else {
+      throw new Error(`OpenAI API error (${response.status}): ${errorBody}`);
+    }
+  }
 
   if (!response.ok) {
     const errorBody = await response.text();

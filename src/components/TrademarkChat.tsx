@@ -12,12 +12,14 @@ interface ChatMessage {
 interface TrademarkChatProps {
   report: InvestigationReport | null;
   openAiKey: string;
+  model?: string;
   onOpenSettings: () => void;
 }
 
 export default function TrademarkChat({
   report,
   openAiKey,
+  model = "gpt-5-mini",
   onOpenSettings,
 }: TrademarkChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -58,6 +60,7 @@ export default function TrademarkChat({
           messages: newMessages.filter((m) => m.role !== "system"),
           report: report || undefined,
           apiKey: openAiKey || undefined,
+          model: model,
         }),
       });
 
@@ -125,6 +128,9 @@ export default function TrademarkChat({
               <h3 className="text-sm font-semibold text-white">Asesor Legal AI</h3>
               <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-medium text-indigo-400 border border-indigo-500/20">
                 Ley 1294/98
+              </span>
+              <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono text-blue-300 border border-blue-500/20">
+                {model}
               </span>
             </div>
             <p className="text-[11px] text-slate-400">

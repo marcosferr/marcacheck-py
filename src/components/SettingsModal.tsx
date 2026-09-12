@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Key, ShieldCheck, X, Check } from "lucide-react";
+import { Key, ShieldCheck, X, Check, Cpu } from "lucide-react";
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   openAiKey: string;
   setOpenAiKey: (key: string) => void;
+  openAiModel: string;
+  setOpenAiModel: (model: string) => void;
 }
 
 export default function SettingsModal({
@@ -15,20 +17,26 @@ export default function SettingsModal({
   onClose,
   openAiKey,
   setOpenAiKey,
+  openAiModel,
+  setOpenAiModel,
 }: SettingsModalProps) {
   const [localKey, setLocalKey] = useState(openAiKey);
+  const [localModel, setLocalModel] = useState(openAiModel || "gpt-5-mini");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     setLocalKey(openAiKey);
-  }, [openAiKey]);
+    setLocalModel(openAiModel || "gpt-5-mini");
+  }, [openAiKey, openAiModel]);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
     setOpenAiKey(localKey.trim());
+    setOpenAiModel(localModel.trim());
     if (typeof window !== "undefined") {
       localStorage.setItem("marcacheck_openai_key", localKey.trim());
+      localStorage.setItem("marcacheck_openai_model", localModel.trim());
     }
     setSaved(true);
     setTimeout(() => {
@@ -52,15 +60,37 @@ export default function SettingsModal({
             <Key className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Configuración de API</h3>
-            <p className="text-xs text-slate-400">Personaliza tus claves para el Asesor Legal</p>
+            <h3 className="text-lg font-semibold text-white">Configuración de Inteligencia Artificial</h3>
+            <p className="text-xs text-slate-400">Personaliza tu clave y modelo de OpenAI</p>
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              OpenAI API Key (para el Chat Asesor Legal)
+              Modelo de OpenAI
+            </label>
+            <div className="relative">
+              <select
+                value={localModel}
+                onChange={(e) => setLocalModel(e.target.value)}
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="gpt-5-mini">GPT-5 Mini (Recomendado / Predeterminado)</option>
+                <option value="gpt-5">GPT-5</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="o3-mini">o3-mini</option>
+              </select>
+            </div>
+            <p className="mt-1 text-[11px] text-slate-400">
+              Configurado actualmente: <span className="text-indigo-400 font-mono font-medium">{localModel}</span>
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              OpenAI API Key
             </label>
             <input
               type="password"
@@ -70,14 +100,14 @@ export default function SettingsModal({
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
             />
             <p className="mt-1.5 text-[11px] text-slate-400">
-              Tu clave se almacena localmente en tu navegador y se envía directamente a la API de OpenAI para responder tus consultas legales. Si ya está definida en el servidor (.env), puedes dejar este campo vacío.
+              Tu clave se almacena localmente en tu navegador para interactuar con el modelo seleccionado.
             </p>
           </div>
 
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex items-start gap-2.5">
             <ShieldCheck className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
             <div className="text-xs text-slate-300">
-              <span className="font-medium text-emerald-400">Tavily & DINAPI activos:</span> La búsqueda web y el motor de marcas oficial de Paraguay están conectados y configurados en el backend.
+              <span className="font-medium text-emerald-400">Tavily & DINAPI activos:</span> El motor oficial de marcas de Paraguay y búsqueda web están listos para inyectar datos en tiempo real al modelo.
             </div>
           </div>
 
@@ -97,7 +127,7 @@ export default function SettingsModal({
                   <Check className="h-3.5 w-3.5" /> Guardado
                 </>
               ) : (
-                "Guardar Clave"
+                "Guardar Cambios"
               )}
             </button>
           </div>

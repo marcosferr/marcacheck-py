@@ -34,8 +34,9 @@ export default function Home() {
   // Tabs
   const [activeTab, setActiveTab] = useState<"dictamen" | "dinapi" | "web" | "chat">("dictamen");
 
-  // OpenAI API Key management
+  // OpenAI API Key & Model management
   const [openAiKey, setOpenAiKey] = useState("");
+  const [openAiModel, setOpenAiModel] = useState("gpt-5-mini");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
@@ -43,6 +44,10 @@ export default function Home() {
       const savedKey = localStorage.getItem("marcacheck_openai_key");
       if (savedKey) {
         setOpenAiKey(savedKey);
+      }
+      const savedModel = localStorage.getItem("marcacheck_openai_model");
+      if (savedModel) {
+        setOpenAiModel(savedModel);
       }
     }
   }, []);
@@ -96,6 +101,8 @@ export default function Home() {
         onClose={() => setIsSettingsOpen(false)}
         openAiKey={openAiKey}
         setOpenAiKey={setOpenAiKey}
+        openAiModel={openAiModel}
+        setOpenAiModel={setOpenAiModel}
       />
 
       {/* Navbar */}
@@ -368,6 +375,7 @@ export default function Home() {
                   <TrademarkChat
                     report={report}
                     openAiKey={openAiKey}
+                    model={openAiModel}
                     onOpenSettings={() => setIsSettingsOpen(true)}
                   />
                 </div>
@@ -379,6 +387,7 @@ export default function Home() {
               <TrademarkChat
                 report={report}
                 openAiKey={openAiKey}
+                model={openAiModel}
                 onOpenSettings={() => setIsSettingsOpen(true)}
               />
             </div>

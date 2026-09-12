@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       messages,
       investigationReport: report,
       apiKey: clientApiKey,
-      model: model || "gpt-4o-mini"
+      model: model || "gpt-5-mini"
     });
 
     return NextResponse.json({ success: true, message: reply });
