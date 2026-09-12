@@ -160,10 +160,17 @@ export class DINAPIClient {
               return reject(new Error(`DINAPI HTTP ${res.statusCode}: ${body.slice(0, 200)}`));
             }
             try {
-              const data = JSON.parse(body);
+              let data = JSON.parse(body);
+              if (typeof data === "string" && data.includes("<return>")) {
+                data = this.parseXmlReturns(data);
+              }
               resolve(data);
             } catch (err: any) {
-              reject(new Error(`Error parsing DINAPI JSON response: ${err.message}`));
+              if (body.includes("<return>")) {
+                resolve(this.parseXmlReturns(body));
+              } else {
+                reject(new Error(`Error parsing DINAPI JSON response: ${err.message}`));
+              }
             }
           });
         }
@@ -180,6 +187,52 @@ export class DINAPIClient {
       req.write(postData);
       req.end();
     });
+  }
+
+  private parseXmlReturns(xmlStr: string): any[] {
+    const returns = xmlStr.match(/<return>[\s\S]*?<\/return>/g) || [];
+    const results: any[] = [];
+
+    for (const ret of returns) {
+      const titleM = ret.match(/<fileSummaryDescription>(.*?)<\/fileSummaryDescription>/);
+      const ownerM = ret.match(/<fileSummaryOwner>(.*?)<\/fileSummaryOwner>/);
+      const statusM = ret.match(/<fileSummaryStatus>(.*?)<\/fileSummaryStatus>/);
+      const classM = ret.match(/<fileSummaryClasses>(.*?)<\/fileSummaryClasses>/);
+      const fileM = ret.match(/<fileNbr><doubleValue>([\d.]+)<\/doubleValue><\/fileNbr>/);
+      const regM = ret.match(/<registrationNbr><doubleValue>([\d.]+)<\/doubleValue><\/registrationNbr>/);
+      const dateM = ret.match(/<filingDate><dateValue>(.*?)<\/dateValue><\/filingDate>/);
+      const regDateM = ret.match(/<registrationDate><dateValue>(.*?)<\/dateValue><\/registrationDate>/);
+      const expDateM = ret.match(/<expirationDate><dateValue>(.*?)<\/dateValue><\/expirationDate>/);
+      const typeM = ret.match(/<signType>(.*?)<\/signType>/);
+      const agentM = ret.match(/<representativeName>(.*?)<\/representativeName>/) || ret.match(/<fileSummaryRepresentative>(.*?)<\/fileSummaryRepresentative>/);
+
+      let cleanClass = "";
+      if (classM) {
+        const clsMatch = classM[1].match(/\)\s*(\d{1,2})/) || classM[1].match(/\b(\d{1,2})\b/);
+        cleanClass = clsMatch ? clsMatch[1] : classM[1].trim();
+      }
+
+      const cleanDate = (d?: string) => {
+        if (!d) return "";
+        return d.split("T")[0];
+      };
+
+      results.push({
+        titulo: titleM ? titleM[1].trim() : "",
+        titular: ownerM ? ownerM[1].trim() : "",
+        estado: statusM ? statusM[1].trim() : "",
+        clase: cleanClass,
+        fileNbr: fileM ? Math.floor(parseFloat(fileM[1])) : "",
+        regNbr: regM ? Math.floor(parseFloat(regM[1])) : "",
+        fecha: cleanDate(dateM ? dateM[1].trim() : ""),
+        regDate: cleanDate(regDateM ? regDateM[1].trim() : ""),
+        vence: cleanDate(expDateM ? expDateM[1].trim() : ""),
+        signo: typeM ? typeM[1].trim() : "Denominativa",
+        agent: agentM ? agentM[1].trim() : "",
+      });
+    }
+
+    return results;
   }
 
   private parseRecords(rawResponse: any, referenceTerm: string = ""): DINAPIRecord[] {

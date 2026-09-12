@@ -179,27 +179,27 @@ export class BrandClearanceEngine {
     let headline = "";
 
     if (hasIdenticalActive) {
-      riskScore = Math.max(riskScore, 95);
-      legalBasis.push("Art. 2 Inc. a) Ley 1294/98: No pueden registrarse signos idénticos a otros ya registrados para los mismos productos o servicios.");
+      riskScore = 98;
+      legalBasis.push("Art. 2 Inc. a) Ley 1294/98: Prohibición absoluta. No pueden registrarse signos idénticos a otros ya registrados para los mismos productos o servicios.");
       headline = `Riesgo CRÍTICO: La denominación "${brandName}" ya se encuentra registrada y concedida en DINAPI a nombre de un tercero.`;
       recommendations.push("No se aconseja presentar la solicitud en la forma actual debido a un obstáculo insalvable de identidad.");
       recommendations.push("Evaluar una denominación sustancialmente distintiva o verificar si el registro vigente es susceptible de caducidad por falta de uso (Art. 27 Ley 1294/98).");
     } else if (hasPendingApplication) {
-      riskScore = Math.max(riskScore, 85);
+      riskScore = 88;
       legalBasis.push("Principio de Prioridad Registral: Existe una solicitud previa en trámite en DINAPI que confiere prelación a su solicitante.");
       headline = `Riesgo ALTO: Existe una solicitud prioritaria en trámite en DINAPI para un signo idéntico.`;
       recommendations.push("Monitorear el trámite de la solicitud prioritaria para verificar si es concedida o denegada.");
       recommendations.push("Considerar la adopción de un elemento gráfico o denominativo complementario que diferencie claramente el signo.");
     } else if (hasHighSimilarity) {
-      riskScore = Math.max(riskScore, 70);
+      riskScore = 75;
       legalBasis.push("Art. 2 Inc. b) Ley 1294/98: Prohíbe signos semejantes que puedan inducir a confusión o asociación en el público consumidor.");
       headline = `Riesgo ALTO: Se detectaron antecedentes en DINAPI con alta similitud fonética o gráfica.`;
       recommendations.push("Presentar la marca combinada con un diseño o logotipo fuertemente distintivo (marca mixta).");
       recommendations.push("Delimitar con precisión los productos o servicios específicos para minimizar el riesgo de oposición.");
     } else {
       if (related.length > 0) {
-        riskScore = Math.max(riskScore, 35);
-        headline = `Riesgo MEDIO-BAJO: No se hallaron marcas idénticas concedidas, aunque existen signos con similitud parcial.`;
+        riskScore = 40;
+        headline = `Riesgo MEDIO: No se hallaron marcas idénticas concedidas, aunque existen signos con similitud en clases afines.`;
         recommendations.push("La denominación cuenta con viabilidad registral preliminar en DINAPI.");
         recommendations.push("Se recomienda acompañar el registro con una adecuada reivindicación de elementos mixtos o gráficos.");
       } else {
@@ -210,13 +210,43 @@ export class BrandClearanceEngine {
       }
     }
 
+    // Evaluación de Notoriedad e Inteligencia Web (Tavily)
     if (webReport.py_presence_detected) {
-      if (riskScore < 70) {
-        riskScore = Math.min(80, riskScore + 25);
+      const webContentLower = (webReport.results || []).map(r => `${r.title} ${r.content}`).join(" ").toLowerCase();
+      const hasHighNotoriety =
+        webReport.total_results >= 3 &&
+        (webContentLower.includes("trayectoria") ||
+          webContentLower.includes("empresa paraguaya") ||
+          webContentLower.includes("marca lider") ||
+          webContentLower.includes("marca líder") ||
+          webContentLower.includes("mercado local") ||
+          webContentLower.includes("años en") ||
+          webContentLower.includes("décadas") ||
+          webContentLower.includes("top of mind") ||
+          webContentLower.includes("prestigio") ||
+          webContentLower.includes("marca país") ||
+          webContentLower.includes("pionera"));
+
+      if (hasHighNotoriety) {
+        // Marca notoria o con altísima presencia comercial
+        riskScore = Math.max(riskScore, 90);
+        headline = `Riesgo CRÍTICO: Se detectó alta notoriedad y presencia de mercado consolidada en Paraguay para "${brandName}".`;
+        legalBasis.push("Art. 2 Inc. k) Ley 1294/98 (Protección de la Marca Notoria): Prohíbe el registro de signos que constituyan la reproducción, imitación o traducción de una marca notoriamente conocida, independientemente del principio de especialidad de clases.");
+        recommendations.unshift("ALERTA DE CESE Y DESISTA: Existe altísimo riesgo de recibir una intimación de cese y desista o demandas por infracción marcaria y competencia desleal debido a la notoriedad pública del signo en el mercado nacional.");
+      } else if (webReport.total_results >= 2 || webReport.social_profiles.length > 0) {
+        // Presencia comercial local activa
+        riskScore = Math.max(riskScore, 75);
+        if (!hasIdenticalActive && !hasPendingApplication) {
+          headline = `Riesgo ALTO: Se detectó actividad comercial activa y perfiles públicos en Paraguay para "${brandName}".`;
+        }
+        legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: La existencia de un comercio preexistente en el mercado paraguayo faculta al usuario anterior a deducir oposición e invocar derechos de uso prioritario.");
+        recommendations.unshift("RIESGO DE CESE Y DESISTA: Se detectaron comercios activos con esta denominación. Se aconseja descartar conflicto de uso de hecho antes de invertir en la marca.");
+      } else {
+        // Presencia incipiente
+        riskScore = Math.max(riskScore, 55);
+        legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: El comercio previo no registrado puede fundar oposiciones en DINAPI.");
+        recommendations.push("Investigar la identidad del negocio detectado en internet para descartar conflicto de titularidad.");
       }
-      headline += " Se detectó además presencia comercial activa en la web local.";
-      legalBasis.push("Doctrina de Marca de Hecho / Uso Previo: La existencia de un comercio preexistente en el mercado paraguayo puede facultar al usuario anterior a deducir oposición.");
-      recommendations.push("Investigar la identidad del negocio detectado en internet para descartar conflicto de uso de hecho o titularidad.");
     }
 
     if (webReport.social_profiles.length > 0) {
