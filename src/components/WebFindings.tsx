@@ -32,10 +32,13 @@ export default function WebFindings({ webReport, brandName }: WebFindingsProps) 
           </div>
 
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
               <h4 className="font-semibold text-sm text-white">
                 Inteligencia de Mercado Web (Tavily AI Search)
               </h4>
+              <span className="rounded bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono text-blue-300 border border-blue-500/20">
+                site:.com.py / .py
+              </span>
               {webReport.py_presence_detected ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] font-medium text-amber-300 border border-amber-500/30">
                   <MapPin className="h-3 w-3" /> Presencia en Paraguay detectada
@@ -128,11 +131,15 @@ export default function WebFindings({ webReport, brandName }: WebFindingsProps) 
                   <span className="truncate max-w-[400px]">{r.title || r.url}</span>
                   <ExternalLink className="h-3 w-3 shrink-0" />
                 </a>
-                {r.is_local_py && (
+                {r.is_com_py ? (
+                  <span className="shrink-0 rounded bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-500/30">
+                    .COM.PY
+                  </span>
+                ) : r.is_local_py ? (
                   <span className="shrink-0 rounded bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300 border border-amber-500/20">
                     .PY / Paraguay
                   </span>
-                )}
+                ) : null}
               </div>
               <div className="text-[11px] text-slate-500 font-mono mt-0.5 mb-1">
                 {r.domain}

@@ -8,6 +8,7 @@ export interface WebSearchResult {
   content: string;
   score: number;
   is_local_py: boolean;
+  is_com_py: boolean;
   domain: string;
 }
 
@@ -18,6 +19,7 @@ export interface BrandWebReport {
   total_results: number;
   results: WebSearchResult[];
   py_presence_detected: boolean;
+  py_domain_count: number;
   social_profiles: Array<{ platform: string; url: string }>;
   detected_activities: string[];
   suggested_niza_classes: Array<{ number: number; title: string; category: string }>;
@@ -44,6 +46,7 @@ export class TavilyBrandResearcher {
         total_results: 0,
         results: [],
         py_presence_detected: false,
+        py_domain_count: 0,
         social_profiles: [],
         detected_activities: [],
         suggested_niza_classes: [],
@@ -51,52 +54,30 @@ export class TavilyBrandResearcher {
       };
     }
 
-    // Estrategia de query dirigida a Paraguay y uso comercial
-    const query = categoryHint
-      ? `"${cleanBrand}" Paraguay ${categoryHint}`
-      : `"${cleanBrand}" Paraguay marca comercio empresa`;
+    // 1. Estrategia primaria: Acotar específicamente a dominios .com.py y .py de Paraguay
+    const primaryQuery = categoryHint
+      ? `"${cleanBrand}" (site:.com.py OR site:.py) ${categoryHint}`
+      : `"${cleanBrand}" (site:.com.py OR site:.py)`;
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+      let activeQuery = primaryQuery;
+      let data = await this.executeTavilyQuery(primaryQuery);
+      let rawResults = data?.results || [];
 
-      const resp = await fetch(TAVILY_SEARCH_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          api_key: this.apiKey,
-          query: query,
-          search_depth: "advanced",
-          include_answer: true,
-          max_results: 8
-        }),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!resp.ok) {
-        const errText = await resp.text();
-        return {
-          brand_name: cleanBrand,
-          query_used: query,
-          has_live_api: false,
-          total_results: 0,
-          results: [],
-          py_presence_detected: false,
-          social_profiles: [],
-          detected_activities: [],
-          suggested_niza_classes: [],
-          summary: `Error de respuesta Tavily (${resp.status}): ${errText.slice(0, 150)}`
-        };
+      // 2. Si no hay resultados en .com.py/.py, fallback a búsqueda comercial en Paraguay (redes, .com locales, etc.)
+      if (rawResults.length === 0) {
+        const fallbackQuery = categoryHint
+          ? `"${cleanBrand}" Paraguay ${categoryHint}`
+          : `"${cleanBrand}" Paraguay marca comercio empresa`;
+        activeQuery = fallbackQuery;
+        data = await this.executeTavilyQuery(fallbackQuery);
+        rawResults = data?.results || [];
       }
 
-      const data = await resp.json();
-      const rawResults = data.results || [];
-      const answer = data.answer || "";
-
+      const answer = data?.answer || "";
       const results: WebSearchResult[] = [];
       let pyDetected = false;
+      let pyDomainCount = 0;
       const socialProfiles: Array<{ platform: string; url: string }> = [];
       const allTextChunks: string[] = [];
 
@@ -113,8 +94,10 @@ export class TavilyBrandResearcher {
           domain = "";
         }
 
+        const isComPy = domain.endsWith(".com.py");
         const isPy =
           domain.endsWith(".py") ||
+          isComPy ||
           content.toLowerCase().includes("paraguay") ||
           title.toLowerCase().includes("paraguay") ||
           content.toLowerCase().includes("asunción") ||
@@ -122,6 +105,9 @@ export class TavilyBrandResearcher {
 
         if (isPy) {
           pyDetected = true;
+        }
+        if (domain.endsWith(".py") || isComPy) {
+          pyDomainCount++;
         }
 
         // Redes sociales
@@ -143,6 +129,7 @@ export class TavilyBrandResearcher {
           content,
           score,
           is_local_py: isPy,
+          is_com_py: isComPy,
           domain
         });
       }
@@ -173,21 +160,24 @@ export class TavilyBrandResearcher {
       let summaryText = answer;
       if (!summaryText) {
         if (results.length === 0) {
-          summaryText = `No se encontraron menciones comerciales relevantes en internet para "${cleanBrand}" asociadas a Paraguay.`;
+          summaryText = `No se encontraron menciones en dominios .com.py ni en internet para "${cleanBrand}" en Paraguay.`;
+        } else if (pyDomainCount > 0) {
+          summaryText = `Se detectó presencia activa en ${pyDomainCount} dominio(s) paraguayo(s) (.com.py / .py) para "${cleanBrand}".`;
         } else if (pyDetected) {
-          summaryText = `Se detectó presencia web activa con indicios de actividad comercial local en Paraguay para "${cleanBrand}".`;
+          summaryText = `Se detectó presencia comercial activa con indicios de actividad en Paraguay para "${cleanBrand}".`;
         } else {
-          summaryText = `Se encontraron resultados web globales para "${cleanBrand}", pero sin vínculo específico o directo confirmado con el mercado de Paraguay.`;
+          summaryText = `Se encontraron resultados para "${cleanBrand}", pero sin vínculo comercial confirmado con Paraguay.`;
         }
       }
 
       return {
         brand_name: cleanBrand,
-        query_used: query,
+        query_used: activeQuery,
         has_live_api: true,
         total_results: results.length,
         results,
         py_presence_detected: pyDetected,
+        py_domain_count: pyDomainCount,
         social_profiles: socialProfiles,
         detected_activities: [],
         suggested_niza_classes: suggestedNiza,
@@ -196,16 +186,45 @@ export class TavilyBrandResearcher {
     } catch (err: any) {
       return {
         brand_name: cleanBrand,
-        query_used: query,
+        query_used: primaryQuery,
         has_live_api: false,
         total_results: 0,
         results: [],
         py_presence_detected: false,
+        py_domain_count: 0,
         social_profiles: [],
         detected_activities: [],
         suggested_niza_classes: [],
         summary: `Error al consultar Tavily: ${err.message}`
       };
+    }
+  }
+
+  private async executeTavilyQuery(query: string): Promise<any> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const resp = await fetch(TAVILY_SEARCH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          api_key: this.apiKey,
+          query: query,
+          search_depth: "advanced",
+          include_answer: true,
+          max_results: 8
+        }),
+        signal: controller.signal
+      });
+
+      if (!resp.ok) {
+        return null;
+      }
+
+      return await resp.json();
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 }
