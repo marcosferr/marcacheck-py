@@ -32,11 +32,23 @@ export default function TrademarkChat({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [hasServerKey, setHasServerKey] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    fetch("/api/chat")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.hasServerOpenAiKey) {
+          setHasServerKey(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -155,11 +167,25 @@ export default function TrademarkChat({
           </button>
           <button
             onClick={onOpenSettings}
-            title="Configurar OpenAI API Key"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition"
+            title={hasServerKey ? "OpenAI API Key configurada en Vercel" : "Configurar OpenAI API Key"}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition"
           >
-            <Key className="h-3.5 w-3.5 text-amber-400" />
-            <span>API Key</span>
+            {hasServerKey ? (
+              <>
+                <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                <span className="text-emerald-300 font-medium">Vercel Env</span>
+              </>
+            ) : openAiKey ? (
+              <>
+                <Key className="h-3.5 w-3.5 text-blue-400" />
+                <span>Key Local</span>
+              </>
+            ) : (
+              <>
+                <Key className="h-3.5 w-3.5 text-amber-400" />
+                <span>API Key</span>
+              </>
+            )}
           </button>
         </div>
       </div>

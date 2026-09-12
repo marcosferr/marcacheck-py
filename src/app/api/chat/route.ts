@@ -3,6 +3,14 @@ import { askOpenAI, ChatMessage } from "@/lib/openai";
 
 export const dynamic = "force-dynamic";
 
+export async function GET() {
+  const hasKey = !!(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim().length > 0);
+  return NextResponse.json({
+    hasServerOpenAiKey: hasKey,
+    defaultModel: "gpt-5-mini"
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

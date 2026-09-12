@@ -56,7 +56,11 @@ export async function askOpenAI(params: {
   apiKey?: string;
   model?: string;
 }): Promise<string> {
-  const key = (params.apiKey || process.env.OPENAI_API_KEY || "").trim();
+  const key = (
+    params.apiKey && params.apiKey.trim().length > 0
+      ? params.apiKey.trim()
+      : process.env.OPENAI_API_KEY || ""
+  ).trim();
 
   if (!key) {
     throw new Error(

@@ -23,6 +23,18 @@ export default function SettingsModal({
   const [localKey, setLocalKey] = useState(openAiKey);
   const [localModel, setLocalModel] = useState(openAiModel || "gpt-5-mini");
   const [saved, setSaved] = useState(false);
+  const [hasServerKey, setHasServerKey] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/chat")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.hasServerOpenAiKey) {
+          setHasServerKey(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     setLocalKey(openAiKey);
@@ -96,12 +108,19 @@ export default function SettingsModal({
               type="password"
               value={localKey}
               onChange={(e) => setLocalKey(e.target.value)}
-              placeholder="sk-proj-..."
+              placeholder={hasServerKey ? "Configurada en Vercel (opcional cambiar)" : "sk-proj-..."}
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
             />
-            <p className="mt-1.5 text-[11px] text-slate-400">
-              Tu clave se almacena localmente en tu navegador para interactuar con el modelo seleccionado.
-            </p>
+            {hasServerKey ? (
+              <p className="mt-1.5 text-[11px] text-emerald-400 flex items-center gap-1.5 font-medium">
+                <Check className="h-3.5 w-3.5" />
+                <span>OPENAI_API_KEY activa en el despliegue de Vercel. Lista para usar.</span>
+              </p>
+            ) : (
+              <p className="mt-1.5 text-[11px] text-slate-400">
+                Tu clave se almacena localmente en tu navegador para interactuar con el modelo seleccionado.
+              </p>
+            )}
           </div>
 
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex items-start gap-2.5">
