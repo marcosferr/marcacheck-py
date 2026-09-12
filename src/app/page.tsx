@@ -187,7 +187,7 @@ export default function Home() {
                 <input
                   type="text"
                   required
-                  placeholder="Ej: INDICIA, TEREREDEV, METRIKA..."
+                  placeholder="Ej: NOVATECH, TEREREDEV, METRIKA..."
                   value={brandName}
                   onChange={(e) => setBrandName(e.target.value)}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 font-semibold uppercase tracking-wider focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
@@ -233,10 +233,10 @@ export default function Home() {
             <span className="text-slate-400 font-medium">Ejemplos de prueba:</span>
             <button
               type="button"
-              onClick={() => handleInvestigate("indicia")}
+              onClick={() => handleInvestigate("novatech")}
               className="rounded-lg bg-slate-800/80 hover:bg-slate-700 px-2.5 py-1 text-slate-300 border border-slate-700/60 transition"
             >
-              Indicia (Disponible)
+              Novatech (Disponible)
             </button>
             <button
               type="button"

@@ -93,7 +93,7 @@ npm run start
 ## 🧪 Pruebas y Casos de Validación
 
 La aplicación incluye soporte y pruebas sobre marcas reales verificadas:
-- **`indicia`**: 0 antecedentes en DINAPI. Score de viabilidad alto (90%).
+- **`novatech`**: 0 antecedentes en DINAPI. Score de viabilidad alto (90%).
 - **`tereredev`** (Clase 42): 0 antecedentes en DINAPI. Sin colisiones registradas, sugerencia de registro para software y servicios web.
 - **`metrika`** (Clase 42): Detecta la marca concedida `MÉTRIKA E.A.S.` (Reg. 632524) y presencia activa de `Metrika Paraguay` en LinkedIn y web local. Dictamina alerta de riesgo por colisión registral y uso anterior.
 
